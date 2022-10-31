@@ -16,4 +16,4 @@
     pip install lxml
     pip install tkinter
 ```
-- Đối với Chromedriver: Các bạn vào link [Chromedriver](https://chromedriver.chromium.org/downloads) và chọn phiên bản tương thích với trình duyệt Chrome trên máy<br>Sau khi cài đặt, các bạn copy đường dẫn và thay thế vào biến `PATH` trong file `shopee.py`
+- Đối với Chromedriver: Các bạn vào link [Chromedriver](https://chromedriver.chromium.org/downloads) và chọn phiên bản tương thích với trình duyệt Chrome trên máy<br>Sau khi cài đặt, các bạn copy đường dẫn và thay thế vào biến `PATH` trong file `shopeeFunctions.py`

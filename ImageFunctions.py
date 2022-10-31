@@ -34,11 +34,11 @@ def get_url(url):   # get link ảnh vào urls = []
             messagebox.showerror('Error', 'Đã có lỗi xảy ra\nVui lòng thử lại')
         else:
             soup = bs(page, 'lxml')
-            for item in soup.findAll('a'):
+            for item in soup.findAll('a', {'href' : True}):
                 if item['href'].endswith('jpg'):
                     urls.append(item['href'])
 
-            for item in soup.findAll('img'):
+            for item in soup.findAll('img', {'src' : True}):
                 if item is not None:
                     if item['src'].startswith('http'):
                         urls.append(item['src'])

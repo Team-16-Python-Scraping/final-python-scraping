@@ -150,7 +150,7 @@ def fillTreeView(productTree):
 
 def showProducts(): #ProductTable
     table = Toplevel()
-    table.attributes('-topmost', True)
+    # table.attributes('-topmost', True)
     table.geometry("1200x424")
     # Construct Treeview  
     columns = ['S_T_T','Tên_sản_phẩm','Giá_nhỏ_nhất','Giá_lớn_nhất','Đã_bán','Sao_đánh_giá','Link_sản_phẩm']
