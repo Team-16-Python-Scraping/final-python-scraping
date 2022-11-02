@@ -11,7 +11,7 @@ from tkinter import ttk
 from tkinter import Tk
 import threading
 from shopeeFunctions import getPosition
-
+from tkinter import filedialog
 
 def get_url(url):   # get link ảnh vào urls = []
     urls = []
@@ -105,5 +105,8 @@ def getImage_run(tab2, url, path, limit):
             except:
                 pass
         threading.Thread(target=endProgress, args=(tab2,)).start()
-        messagebox.showinfo('Successfully', 'Đã download tất cả ảnh vào trong\n thư mục C:\\team16\\images')
-
+        response = messagebox.askokcancel("Successfully","Bạn có muốn mở thư mục khum ?")
+        if response == 1 : showFolder()
+def showFolder():
+    filedialog.askopenfile(initialdir=r"C:/team16/images",title="Select a File",filetypes=(("jpg files","*.jpg"),("all files","*.*")))
+       

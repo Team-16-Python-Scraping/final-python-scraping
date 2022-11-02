@@ -30,9 +30,9 @@ class initWindow(tk.Tk):
         rootImg.place(in_=self, x=0, y=0)
 
         # Button about us for more infor
-        btn_aboutUs = tk.Label(self, text='ABOUT US', bg='black',
+        btn_aboutUs = tk.Button(self, text='ABOUT US', bg='black',
                                fg='white', width=9, height=2,
-                               font=('Inter', 10, 'bold'))
+                               font=('Inter', 10, 'bold'),command=accessToGithub)
         btn_aboutUs.pack(pady=2, anchor='e')
 
         #Create personal style

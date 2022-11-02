@@ -1,6 +1,6 @@
 import threading
 import lxml
-from tkinter import messagebox
+from tkinter import filedialog, messagebox
 from tkinter import ttk
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -13,7 +13,8 @@ from tkinter import BOTH, CENTER, END, LEFT, RIGHT, Y, Frame, Label, Listbox, Sc
 import webbrowser
 import os
 PATH = r'C:\Program Files (x86)\Chromedriver\chromedriver.exe' #link to chromedriver app in your pc
-
+def accessToGithub():
+    webbrowser.open("https://github.com/Team-16-Python-Scraping/final-python-scraping.git")
 def getPosition(root, window_width, window_height):
     # get the screen size of your computer [width and height using the root object as foolows]
     screen_width = root.winfo_screenwidth()
@@ -234,11 +235,9 @@ def showProducts(): #ProductTable
     lb_exportToFile.pack(pady=10)
     e_exportToFile.pack(pady=5)
     btn_exportToFile.pack(pady=10)
-
-
 def accessToShopee(root, searched_product):
     if len(searched_product) == 0:
         messagebox.showerror("Warning", "Bạn chưa nhập tên sản phẩm")
     else:
         threading.Thread(target=fillProductList, args=(root, searched_product)).start()
-    
+
