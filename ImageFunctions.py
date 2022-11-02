@@ -1,5 +1,3 @@
-from ast import arg
-from concurrent.futures import thread
 from tkinter import Toplevel, messagebox
 import tkinter
 from urllib.error import HTTPError, URLError
