@@ -4,12 +4,16 @@ from urllib.error import HTTPError, URLError
 from urllib.request import urlopen, Request
 import requests
 import os
+from selenium import webdriver
 from tqdm import tqdm #thư viện hiện tiến trình tải
 from bs4 import BeautifulSoup as bs
 from tkinter import ttk
 import threading
 from tkinter import filedialog
 from shopeeFunctions import getPosition
+import time
+import multiprocessing
+PATH = r'C:\Program Files (x86)\Chromedriver\chromedriver.exe' #link to chromedriver app in your pc
 
 def get_url(url):   # get link ảnh vào urls = []
     urls = []
@@ -29,7 +33,20 @@ def get_url(url):   # get link ảnh vào urls = []
         except:
             messagebox.showerror('Error', 'Đã có lỗi xảy ra\nVui lòng thử lại')
         else:
-            soup = bs(page, 'lxml')
+            driver = webdriver.Chrome(executable_path=PATH)
+            driver.get(url)
+            time.sleep(2)
+            for i in range(70):
+                totalScrolledHeight = driver.execute_script("return window.pageYOffset + window.innerHeight")
+                height = int(driver.execute_script("return document.documentElement.scrollHeight"))
+                if totalScrolledHeight == height:
+                    break
+                driver.execute_script('window.scrollBy(0, 350)')
+                time.sleep(0.1)
+            # the script above for auto scroll in order to display all items which are written by js
+            html = driver.page_source
+            driver.close()
+            soup = bs(html, 'lxml')
             for item in soup.findAll('a', {'href' : True}):
                 if item['href'].endswith('jpg'):
                     urls.append(item['href'])
@@ -106,14 +123,20 @@ def getImage_run(tab2, url, path, limit):
     else:
         threading.Thread(target=showProgressBar, args=(tab2,)).start()
         cnt = 0
+        thread = []
         for img in imgs:
             try:
                 cnt += 1
                 if cnt > limit:
                     break
-                download(img, path) # tải ảnh với mỗi url
+                p = threading.Thread(target=download, args=(img, path))
+                p.start()
+                thread.append(p)
+                # download(img, path) # tải ảnh với mỗi url
             except:
                 pass
+        for th in thread:
+            th.join()
         threading.Thread(target=endProgress, args=(tab2,)).start()
         response = messagebox.askokcancel("Successfully","Bạn có muốn mở thư mục không?")
         if response == 1 : showFolder()
