@@ -6,12 +6,10 @@ import requests
 import os
 from tqdm import tqdm #thư viện hiện tiến trình tải
 from bs4 import BeautifulSoup as bs
-from urllib.parse import urljoin, urlparse
 from tkinter import ttk
-from tkinter import Tk
 import threading
-from shopeeFunctions import getPosition
 from tkinter import filedialog
+from shopeeFunctions import getPosition
 
 def get_url(url):   # get link ảnh vào urls = []
     urls = []
@@ -43,25 +41,10 @@ def get_url(url):   # get link ảnh vào urls = []
             return urls     
     return None
         
-    
-
-def download(url, pathname):    #tải file ảnh với url vừa lấy được và đặt vào thư mục tự đặt tên
-    if not os.path.isdir(pathname): # nếu không có directory của folder thì tạo
-        os.makedirs(pathname)
-    response = requests.get(url, stream=True)   # tải lần lượt theo từng url
-    file_size = int(response.headers.get("Content-Length", 0))  # lấy dung lượng ảnh
-    filename = os.path.join(pathname, url.split("/")[-1])   # lấy tên file ảnh
-    progress = tqdm(response.iter_content(1024), f"Downloading {filename}", total=file_size, unit="B", unit_scale=True, unit_divisor=1024) # thanh tiến độ tải, chuyển về bytes thay vì iteration (mặc định trong thư viện tqdm)
-    path = r'C:\team16\Images'
-    files = os.listdir(path)
-    with open(f'{path}\image{len(files)}.jpg', "wb") as f:
-        for data in progress.iterable:
-            f.write(data)   # chuyền dữ liệu đọc được vào file
-            progress.update(len(data))  # cập nhật tiến độ tải
-
 def showProgressBar(root):
-    global win
+    global win, pb
     win = Toplevel()
+    win.attributes("-topmost", True)
     win.geometry(getPosition(root, 300, 120))
     win.resizable(False, False)
     pb = ttk.Progressbar(
@@ -79,8 +62,35 @@ def showProgressBar(root):
     cancel_button.grid(column=0, row=1, padx=10, pady=10, sticky=tkinter.E)
     pb.start()
 def endProgress(root):
-    global win
-    win.destroy()
+    global win, pb
+    pb.destroy()
+    win.destroy() 
+
+def download(url, pathname):    #tải file ảnh với url vừa lấy được và đặt vào thư mục tự đặt tên
+    if not os.path.isdir(pathname): # nếu không có directory của folder thì tạo
+        os.makedirs(pathname)
+    response = requests.get(url, stream=True)   # tải lần lượt theo từng url
+    file_size = int(response.headers.get("Content-Length", 0))  # lấy dung lượng ảnh
+    filename = os.path.join(pathname, url.split("/")[-1])   # lấy tên file ảnh
+    progress = tqdm(response.iter_content(1024), f"Downloading {filename}", total=file_size, unit="B", unit_scale=True, unit_divisor=1024) # thanh tiến độ tải, chuyển về bytes thay vì iteration (mặc định trong thư viện tqdm)
+    path = r'C:\team16\Images'
+    files = os.listdir(path)
+    ext = url[url.rindex('.'):]
+    if ext.startswith('.png'):
+        ext = '.png'
+    elif ext.startswith('.jpg'):
+        ext = '.jpg'
+    elif ext.startswith('.jfif'):
+        ext = '.jfif'
+    elif ext.startswith('.com'):
+        ext = '.jpg'
+    elif ext.startswith('.svg'):
+        ext = '.svg'
+    with open(f'{path}\image{len(files)}{ext}', "wb") as f:
+        for data in progress.iterable:
+            f.write(data)   # chuyền dữ liệu đọc được vào file
+            progress.update(len(data))  # cập nhật tiến độ tải
+
 def getImage_run(tab2, url, path, limit):
     if limit == '':
         limit = 10 ** 6
@@ -105,7 +115,7 @@ def getImage_run(tab2, url, path, limit):
             except:
                 pass
         threading.Thread(target=endProgress, args=(tab2,)).start()
-        response = messagebox.askokcancel("Successfully","Bạn có muốn mở thư mục khum ?")
+        response = messagebox.askokcancel("Successfully","Bạn có muốn mở thư mục không?")
         if response == 1 : showFolder()
 def showFolder():
     filedialog.askopenfile(initialdir=r"C:/team16/images",title="Select a File",filetypes=(("jpg files","*.jpg"),("all files","*.*")))

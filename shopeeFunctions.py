@@ -1,4 +1,5 @@
 import threading
+import tkinter
 import lxml
 from tkinter import filedialog, messagebox
 from tkinter import ttk
@@ -9,12 +10,13 @@ import time
 import csv
 from Product import Product
 import tkinter as tk
-from tkinter import BOTH, CENTER, END, LEFT, RIGHT, Y, Frame, Label, Listbox, Scrollbar, Toplevel, ttk
+from tkinter import CENTER, Toplevel, ttk
 import webbrowser
 import os
 PATH = r'C:\Program Files (x86)\Chromedriver\chromedriver.exe' #link to chromedriver app in your pc
 def accessToGithub():
     webbrowser.open("https://github.com/Team-16-Python-Scraping/final-python-scraping.git")
+
 def getPosition(root, window_width, window_height):
     # get the screen size of your computer [width and height using the root object as foolows]
     screen_width = root.winfo_screenwidth()
@@ -50,8 +52,9 @@ def getHtml(url):  # get source code of web
     return soup
 
 productList = []  # use global var for fill the table and export to csv file
+
 def showProgressBar(root):
-    global win
+    global win, pb
     win = Toplevel()
     win.attributes("-topmost", True)
     win.geometry(getPosition(root, 300, 120))
@@ -68,11 +71,13 @@ def showProgressBar(root):
         text='Cancel',
         command=win.destroy
     )
-    cancel_button.grid(column=0, row=1, padx=10, pady=10, sticky=tk.E)
+    cancel_button.grid(column=0, row=1, padx=10, pady=10, sticky=tkinter.E)
     pb.start()
 def endProgress(root):
-    global win
+    global win, pb
+    pb.destroy()
     win.destroy()
+
 def fillProductList(root, searched_product):
     global productList
     productList.clear()
@@ -152,6 +157,7 @@ def fillTreeView(productTree):
 def showProducts(): #ProductTable
     table = Toplevel()
     # table.attributes('-topmost', True)
+    table.title('Danh sách sản phẩm')
     table.geometry("1200x424")
     # Construct Treeview  
     columns = ['S_T_T','Tên_sản_phẩm','Giá_nhỏ_nhất','Giá_lớn_nhất','Đã_bán','Sao_đánh_giá','Link_sản_phẩm']

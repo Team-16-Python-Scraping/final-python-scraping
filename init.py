@@ -17,7 +17,7 @@ class initWindow(tk.Tk):
         intro.geometry(getPosition(intro))
         intro.after(3000, lambda: intro.destroy())
         intro.mainloop()
-
+ 
     def initPage(self):
         # Insert picture as background
         labelWidth = 800
