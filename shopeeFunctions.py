@@ -56,6 +56,7 @@ productList = []  # use global var for fill the table and export to csv file
 def showProgressBar(root):
     global win, pb
     win = Toplevel()
+    win.title('Đang xử lý...')
     win.attributes("-topmost", True)
     win.geometry(getPosition(root, 300, 120))
     win.resizable(False, False)

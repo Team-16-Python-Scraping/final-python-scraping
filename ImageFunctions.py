@@ -41,7 +41,7 @@ def get_url(url):   # get link ảnh vào urls = []
                 height = int(driver.execute_script("return document.documentElement.scrollHeight"))
                 if totalScrolledHeight == height:
                     break
-                driver.execute_script('window.scrollBy(0, 350)')
+                driver.execute_script('window.scrollBy(0, 600)')
                 time.sleep(0.1)
             # the script above for auto scroll in order to display all items which are written by js
             html = driver.page_source
@@ -61,6 +61,7 @@ def get_url(url):   # get link ảnh vào urls = []
 def showProgressBar(root):
     global win, pb
     win = Toplevel()
+    win.title('Đang xử lý...')
     win.attributes("-topmost", True)
     win.geometry(getPosition(root, 300, 120))
     win.resizable(False, False)
