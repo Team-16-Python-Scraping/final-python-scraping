@@ -38,18 +38,21 @@ def generateLinks(searched_product):
 
 
 def getHtml(url):  # get source code of web
-    driver = webdriver.Chrome(executable_path=PATH)
-    driver.get(url)
-    time.sleep(2)
-    for i in range(20):
-        driver.execute_script("window.scrollBy(0, 350)")
-        time.sleep(0.2)
+    try:
+        driver = webdriver.Chrome(executable_path=PATH)
+        driver.get(url)
+        time.sleep(2)
+        for i in range(20):
+            driver.execute_script("window.scrollBy(0, 350)")
+            time.sleep(0.2)
 
-    # the script above for auto scroll in order to display all items which are written by js
-    html = driver.page_source
-    driver.close()
-    soup = BeautifulSoup(html, 'lxml')
-    return soup
+        # the script above for auto scroll in order to display all items which are written by js
+        html = driver.page_source
+        driver.close()
+        soup = BeautifulSoup(html, 'lxml')
+        return soup
+    except:
+        return None
 
 productList = []  # use global var for fill the table and export to csv file
 
@@ -85,6 +88,11 @@ def fillProductList(root, searched_product):
     url = generateLinks(searched_product)[0]
     threading.Thread(target=showProgressBar, args=(root, )).start()
     soup = getHtml(url)
+    if soup == None:
+        threading.Thread(target=endProgress, args=(root, )).start()
+        messagebox.showerror('Error', 'Có lỗi xảy ra\nVui lòng kiểm tra lại')
+        
+        return
     
     items = soup.find_all('div', class_='col-xs-2-4 shopee-search-item-result__item')
     for item in items:

@@ -39,8 +39,10 @@ def get_url(url):   # get link ảnh vào urls = []
             for i in range(70):
                 totalScrolledHeight = driver.execute_script("return window.pageYOffset + window.innerHeight")
                 height = int(driver.execute_script("return document.documentElement.scrollHeight"))
+                print(totalScrolledHeight, height)
                 if totalScrolledHeight == height:
-                    break
+                    pass
+                    # break
                 driver.execute_script('window.scrollBy(0, 600)')
                 time.sleep(0.1)
             # the script above for auto scroll in order to display all items which are written by js
@@ -142,5 +144,9 @@ def getImage_run(tab2, url, path, limit):
         response = messagebox.askokcancel("Successfully","Bạn có muốn mở thư mục không?")
         if response == 1 : showFolder()
 def showFolder():
-    filedialog.askopenfile(initialdir=r"C:/team16/images",title="Select a File",filetypes=(("jpg files","*.jpg"),("all files","*.*")))
+    filedialog.askopenfile(initialdir=r"C:/team16/images",title="Select a File",filetypes=(("jpg files","*.jpg"),
+                                                                                            ('jfif files', '*.jfif'),
+                                                                                            ("png files", "*.png"), 
+                                                                                            ('svg files', '*.svg'), 
+                                                                                            ("all files","*.*")))
        
