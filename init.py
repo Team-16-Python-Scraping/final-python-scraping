@@ -4,15 +4,17 @@ from PIL import Image, ImageTk
 from shopeeFunctions import *
 from ImageFunctions import *
 import threading
-class initWindow(tk.Tk):
-    def __init__(self):
+class Window(tk.Tk):
+    def __init__(self, productList):
+        self.productList = productList
         tk.Tk.__init__(self)
         self.title('TEAM 16 - Python scraping')
         self.geometry(getPosition(self, 800, 500))
         self.resizable(False, False)
+
     def accessToGithub(self):
-        webbrowser.open(
-        "https://github.com/Team-16-Python-Scraping/final-python-scraping.git")
+        webbrowser.open("https://github.com/Team-16-Python-Scraping/final-python-scraping.git")
+
     def intro(self):
         intro = tk.Tk()
         intro.title('Welcome')
@@ -65,6 +67,7 @@ class initWindow(tk.Tk):
         frame = tk.LabelFrame(tab1, text='Danh sách thuộc tính cần lấy về', width=500, height=200)
 
         lbSearch.place(x=10, y=10)
+        eSearch.focus()
         eSearch.place(x=180, y=10)
         frame.place(x=10, y=50)
 
@@ -91,11 +94,10 @@ class initWindow(tk.Tk):
 
         lbLogo.place(x=550, y=45)
 
-        btnSearch = tk.Button(tab1, text='TRA CỨU!', font=myfont, command= lambda: threading.Thread(target=accessToShopee, args=(tab1, eSearch.get())).start())
+        btnSearch = tk.Button(tab1, text='TRA CỨU!', font=myfont, command= lambda: threading.Thread(target=accessToShopee, args=(tab1, eSearch.get(), self)).start())
         lbCopyRight = tk.Label(tab1, text='@2022 - team 16 PTIT',
                                height=2, bg='black', fg='white',
                                font=myfont, relief=tk.SUNKEN, width=self.winfo_screenwidth(), anchor=tk.W)
-
         btnSearch.place(x=550, y=270)
         lbCopyRight.pack(side='bottom', fill='y')
 

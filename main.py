@@ -1,4 +1,4 @@
 from init import *
 
-App = initWindow()
+App = Window([])
 App.run()
