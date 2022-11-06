@@ -12,7 +12,6 @@ import threading
 from tkinter import filedialog
 from shopeeFunctions import getPosition
 import time
-import multiprocessing
 PATH = r'C:\Program Files (x86)\Chromedriver\chromedriver.exe' #link to chromedriver app in your pc
 
 def get_url(url):   # get link ảnh vào urls = []
@@ -33,31 +32,34 @@ def get_url(url):   # get link ảnh vào urls = []
         except:
             messagebox.showerror('Error', 'Đã có lỗi xảy ra\nVui lòng thử lại')
         else:
-            driver = webdriver.Chrome(executable_path=PATH)
-            driver.get(url)
-            time.sleep(2)
-            for i in range(70):
-                totalScrolledHeight = driver.execute_script("return window.pageYOffset + window.innerHeight")
-                height = int(driver.execute_script("return document.documentElement.scrollHeight"))
-                print(totalScrolledHeight, height)
-                if totalScrolledHeight == height:
-                    pass
-                    # break
-                driver.execute_script('window.scrollBy(0, 600)')
-                time.sleep(0.1)
-            # the script above for auto scroll in order to display all items which are written by js
-            html = driver.page_source
-            driver.close()
-            soup = bs(html, 'lxml')
-            for item in soup.findAll('a', {'href' : True}):
-                if item['href'].endswith('jpg'):
-                    urls.append(item['href'])
+            try:
+                driver = webdriver.Chrome(executable_path=PATH)
+                driver.get(url)
+                time.sleep(2)
+                for i in range(70):
+                    totalScrolledHeight = driver.execute_script("return window.pageYOffset + window.innerHeight")
+                    height = int(driver.execute_script("return document.documentElement.scrollHeight"))
+                    print(totalScrolledHeight, height)
+                    if totalScrolledHeight == height:
+                        break
+                    driver.execute_script('window.scrollBy(0, 600)')
+                    time.sleep(0.1)
+                # the script above for auto scroll in order to display all items which are written by js
+                html = driver.page_source
+                driver.close()
+                soup = bs(html, 'lxml')
+                for item in soup.findAll('a', {'href' : True}):
+                    if item['href'].endswith('jpg'):
+                        urls.append(item['href'])
 
-            for item in soup.findAll('img', {'src' : True}):
-                if item is not None:
-                    if item['src'].startswith('http'):
-                        urls.append(item['src'])
-            return urls     
+                for item in soup.findAll('img', {'src' : True}):
+                    if item is not None:
+                        if item['src'].startswith('http'):
+                            urls.append(item['src'])
+                return urls     
+            except:
+                messagebox.showerror('Error', 'Có lỗi xảy ra\nVui lòng thử lại')
+                return None
     return None
         
 def showProgressBar(root):

@@ -13,9 +13,14 @@ import tkinter as tk
 from tkinter import CENTER, Toplevel, ttk
 import webbrowser
 import os
-PATH = r'C:\Program Files (x86)\Chromedriver\chromedriver.exe' #link to chromedriver app in your pc
+# link to chromedriver app in your pc
+PATH = r'C:\Program Files (x86)\Chromedriver\chromedriver.exe'
+
+
 def accessToGithub():
-    webbrowser.open("https://github.com/Team-16-Python-Scraping/final-python-scraping.git")
+    webbrowser.open(
+        "https://github.com/Team-16-Python-Scraping/final-python-scraping.git")
+
 
 def getPosition(root, window_width, window_height):
     # get the screen size of your computer [width and height using the root object as foolows]
@@ -51,10 +56,12 @@ def getHtml(url):  # get source code of web
         driver.close()
         soup = BeautifulSoup(html, 'lxml')
         return soup
-    except:
+    except :
         return None
 
+
 productList = []  # use global var for fill the table and export to csv file
+win, pb = None, None
 
 def showProgressBar(root):
     global win, pb
@@ -64,11 +71,11 @@ def showProgressBar(root):
     win.geometry(getPosition(root, 300, 120))
     win.resizable(False, False)
     pb = ttk.Progressbar(
-            win,
-            orient='horizontal',
-            mode='indeterminate',
-            length=280
-        )
+        win,
+        orient='horizontal',
+        mode='indeterminate',
+        length=280
+    )
     pb.grid(row=0, column=0, columnspan=2, padx=10, pady=20)
     cancel_button = ttk.Button(
         win,
@@ -77,10 +84,13 @@ def showProgressBar(root):
     )
     cancel_button.grid(column=0, row=1, padx=10, pady=10, sticky=tkinter.E)
     pb.start()
+
+
 def endProgress(root):
     global win, pb
     pb.destroy()
     win.destroy()
+
 
 def fillProductList(root, searched_product):
     global productList
@@ -91,10 +101,11 @@ def fillProductList(root, searched_product):
     if soup == None:
         threading.Thread(target=endProgress, args=(root, )).start()
         messagebox.showerror('Error', 'Có lỗi xảy ra\nVui lòng kiểm tra lại')
-        
+
         return
-    
-    items = soup.find_all('div', class_='col-xs-2-4 shopee-search-item-result__item')
+
+    items = soup.find_all(
+        'div', class_='col-xs-2-4 shopee-search-item-result__item')
     for item in items:
 
         # name
@@ -116,7 +127,8 @@ def fillProductList(root, searched_product):
 
         quantity, sales = item.find('div', class_='r6HknA uEPGHT'), '0'
         if quantity != None:
-            sales = quantity.text.split()[-1].replace(',', '').replace('k', '000')
+            sales = quantity.text.split(
+            )[-1].replace(',', '').replace('k', '000')
 
         # link
         link_item = 'https://shopee.vn' + item.find('a')['href']
@@ -133,7 +145,8 @@ def writeToFile(name):
         path = r'C:\team16\Data'
         if not os.path.exists(path):
             os.makedirs(path, exist_ok=True)
-        csvFile = open(f'{path}\{name}.csv', 'w+', encoding='utf-16', newline='')
+        csvFile = open(f'{path}\{name}.csv', 'w+',
+                       encoding='utf-16', newline='')
         try:
             writer = csv.writer(csvFile, delimiter='\t')
             writer.writerow(
@@ -143,116 +156,138 @@ def writeToFile(name):
             messagebox.showerror('ERROR', 'Đã có lỗi xảy ra!')
         finally:
             csvFile.close()
-            messagebox.showinfo("Sucessfully!", 'Đã lưu vào file vào ổ C:\\team16\\Data')
+            messagebox.showinfo(
+                "Sucessfully!", 'Đã lưu vào file vào ổ C:\\team16\\Data')
+
 
 def clearTreeView(productTree):
     for i in productTree.get_children():
-            productTree.delete(i)
+        productTree.delete(i)
+
+
 def fillTreeView(productTree):
     contacts = []
-    for i in range(0,len(productList)):
-        contacts.append((i+1,productList[i].name,productList[i].minPrice,productList[i].maxPrice,productList[i].sales,'%.1f'%productList[i].rating,productList[i].link))
-    productTree.tag_configure('oddrow',background="#7DE5ED")
-    productTree.tag_configure('evenrow',background="white")
-    count =0
+    for i in range(0, len(productList)):
+        contacts.append((i+1, productList[i].name, productList[i].minPrice, productList[i].maxPrice,
+                        productList[i].sales, '%.1f' % productList[i].rating, productList[i].link))
+    productTree.tag_configure('oddrow', background="#7DE5ED")
+    productTree.tag_configure('evenrow', background="white")
+    count = 0
     for contact in contacts:
-        if(count%2==0):
-            productTree.insert('',tk.END,values=contact,tags="oddrow")
+        if (count % 2 == 0):
+            productTree.insert('', tk.END, values=contact, tags="oddrow")
         else:
-            productTree.insert('',tk.END,values=contact,tags="evenrow")
-        count+=1
-    
+            productTree.insert('', tk.END, values=contact, tags="evenrow")
+        count += 1
 
-def showProducts(): #ProductTable
+
+def showProducts():  # ProductTable
     table = Toplevel()
     # table.attributes('-topmost', True)
     table.title('Danh sách sản phẩm')
     table.geometry("1200x424")
-    # Construct Treeview  
-    columns = ['S_T_T','Tên_sản_phẩm','Giá_nhỏ_nhất','Giá_lớn_nhất','Đã_bán','Sao_đánh_giá','Link_sản_phẩm']
-    productTree = ttk.Treeview(table,columns = columns,show = 'headings',cursor="hand2 orange")
-    def columnConstructor(cl,text,w):
-        productTree.heading(cl,text=text)
-        productTree.column(cl,width=w,anchor=CENTER)
-    columnConstructor('S_T_T','STT',50)
-    columnConstructor('Tên_sản_phẩm','Tên sản phẩm',210)
-    columnConstructor('Giá_nhỏ_nhất','Giá nhỏ nhất',100)
-    columnConstructor('Giá_lớn_nhất','Giá lớn nhất',100)
-    columnConstructor('Đã_bán','Đã bán',80)
-    columnConstructor('Sao_đánh_giá','Sao đánh giá',100)
-    columnConstructor('Link_sản_phẩm','Link sản phẩm',300)
+    # Construct Treeview
+    columns = ['S_T_T', 'Tên_sản_phẩm', 'Giá_nhỏ_nhất',
+               'Giá_lớn_nhất', 'Đã_bán', 'Sao_đánh_giá', 'Link_sản_phẩm']
+    productTree = ttk.Treeview(
+        table, columns=columns, show='headings', cursor="hand2 orange")
+
+    def columnConstructor(cl, text, w):
+        productTree.heading(cl, text=text)
+        productTree.column(cl, width=w, anchor=CENTER)
+    columnConstructor('S_T_T', 'STT', 50)
+    columnConstructor('Tên_sản_phẩm', 'Tên sản phẩm', 210)
+    columnConstructor('Giá_nhỏ_nhất', 'Giá nhỏ nhất', 100)
+    columnConstructor('Giá_lớn_nhất', 'Giá lớn nhất', 100)
+    columnConstructor('Đã_bán', 'Đã bán', 80)
+    columnConstructor('Sao_đánh_giá', 'Sao đánh giá', 100)
+    columnConstructor('Link_sản_phẩm', 'Link sản phẩm', 300)
     contacts = []
-    for i in range(0,len(productList)):
-        contacts.append((i+1,productList[i].name,productList[i].minPrice,productList[i].maxPrice,productList[i].sales,'%.1f'%productList[i].rating,productList[i].link))
-    productTree.tag_configure('oddrow',background="#7DE5ED")
-    productTree.tag_configure('evenrow',background="white")
-    count =0
+    for i in range(0, len(productList)):
+        contacts.append((i+1, productList[i].name, productList[i].minPrice, productList[i].maxPrice,
+                        productList[i].sales, '%.1f' % productList[i].rating, productList[i].link))
+    productTree.tag_configure('oddrow', background="#7DE5ED")
+    productTree.tag_configure('evenrow', background="white")
+    count = 0
     for contact in contacts:
-        if(count%2==0):
-            productTree.insert('',tk.END,values=contact,tags="oddrow")
+        if (count % 2 == 0):
+            productTree.insert('', tk.END, values=contact, tags="oddrow")
         else:
-            productTree.insert('',tk.END,values=contact,tags="evenrow")
-        count+=1
-    s2= ttk.Style()
+            productTree.insert('', tk.END, values=contact, tags="evenrow")
+        count += 1
+    s2 = ttk.Style()
     s2.theme_use("default")
-    s2.configure('Treeview.Heading',background ="orange",bd =1)
-    s2.configure('Treeview',rowheight =40,border =1)
-    s2.map('Treeview',background=[('selected','orange')],)
-    #Access to link of selected product
+    s2.configure('Treeview.Heading', background="orange", bd=1)
+    s2.configure('Treeview', rowheight=40, border=1)
+    s2.map('Treeview', background=[('selected', 'orange')],)
+    # Access to link of selected product
+
     def goLink(event):
         input_id = productTree.selection()
-        input_item = productTree.set(input_id,column="Link_sản_phẩm")
+        input_item = productTree.set(input_id, column="Link_sản_phẩm")
         webbrowser.open('{}'.format(input_item))
-    productTree.bind("<Double-1>",goLink)
+    productTree.bind("<Double-1>", goLink)
     productTree.grid(row=0, column=0, sticky='nsew')
-    #Scrollbar
-    scrollbar = ttk.Scrollbar(table,orient=tk.VERTICAL,command=productTree.yview)
-    productTree.configure(yscroll =scrollbar.set)
+    # Scrollbar
+    scrollbar = ttk.Scrollbar(
+        table, orient=tk.VERTICAL, command=productTree.yview)
+    productTree.configure(yscroll=scrollbar.set)
     scrollbar.grid(row=0, column=1, sticky='ns')
+
     def sortByPrice():
         clearTreeView(productTree)
-        productList.sort(key= lambda x : (x.minPrice, x.maxPrice))
+        productList.sort(key=lambda x: (x.minPrice, x.maxPrice))
         fillTreeView(productTree)
+
     def sortByRating():
         clearTreeView(productTree)
-        productList.sort(key= lambda x : -x.rating)
+        productList.sort(key=lambda x: -x.rating)
         fillTreeView(productTree)
+
     def sortBySales():
         clearTreeView(productTree)
-        productList.sort(key= lambda x : -int(x.sales))
+        productList.sort(key=lambda x: -int(x.sales))
         fillTreeView(productTree)
 
     def sortByPrice():
         clearTreeView(productTree)
-        productList.sort(key= lambda x : (x.minPrice, x.maxPrice))
-        fillTreeView(productTree)
-    def sortByRating():
-        clearTreeView(productTree)
-        productList.sort(key= lambda x : -x.rating)
-        fillTreeView(productTree)
-    def sortBySales():
-        clearTreeView(productTree)
-        productList.sort(key= lambda x : -int(x.sales))
+        productList.sort(key=lambda x: (x.minPrice, x.maxPrice))
         fillTreeView(productTree)
 
-    #Set Selections
-    selections = tk.Frame(table,relief="solid")
-    selections.place(x=980,y=60,height= 350,width=200)
-    btn_sortPrice = tk.Button(selections,text="Sắp xếp theo giá tăng dần",pady=10,fg="white",bg="black",cursor="hand2", command=sortByPrice)
-    btn_sortPriceReverse = tk.Button(selections,text="Sắp xếp theo doanh số giảm dần",pady=10,fg="white",bg="black",cursor="hand2", command=sortBySales)
-    btn_sortRate = tk.Button(selections,text="Sắp xếp theo đánh giá giảm dần",pady=10,fg="white",bg="black",cursor="hand2", command=sortByRating)
+    def sortByRating():
+        clearTreeView(productTree)
+        productList.sort(key=lambda x: -x.rating)
+        fillTreeView(productTree)
+
+    def sortBySales():
+        clearTreeView(productTree)
+        productList.sort(key=lambda x: -int(x.sales))
+        fillTreeView(productTree)
+
+    # Set Selections
+    selections = tk.Frame(table, relief="solid")
+    selections.place(x=980, y=60, height=350, width=200)
+    btn_sortPrice = tk.Button(selections, text="Sắp xếp theo giá tăng dần",
+                              pady=10, fg="white", bg="black", cursor="hand2", command=sortByPrice)
+    btn_sortPriceReverse = tk.Button(selections, text="Sắp xếp theo doanh số giảm dần",
+                                     pady=10, fg="white", bg="black", cursor="hand2", command=sortBySales)
+    btn_sortRate = tk.Button(selections, text="Sắp xếp theo đánh giá giảm dần",
+                             pady=10, fg="white", bg="black", cursor="hand2", command=sortByRating)
     lb_exportToFile = tk.Label(selections, text='Nhập tên file: ')
     e_exportToFile = tk.Entry(selections, width=40)
-    btn_exportToFile = tk.Button(selections, text='Lưu vào file csv!', pady=10, fg='white', bg='green', command=lambda: writeToFile(e_exportToFile.get()))
+    btn_exportToFile = tk.Button(selections, text='Lưu vào file csv!', pady=10,
+                                 fg='white', bg='green', command=lambda: writeToFile(e_exportToFile.get()))
     btn_sortPrice.pack(pady=10)
-    btn_sortPriceReverse.pack(pady=10) 
-    btn_sortRate.pack(pady=10) 
+    btn_sortPriceReverse.pack(pady=10)
+    btn_sortRate.pack(pady=10)
     lb_exportToFile.pack(pady=10)
     e_exportToFile.pack(pady=5)
     btn_exportToFile.pack(pady=10)
+
+
 def accessToShopee(root, searched_product):
     if len(searched_product) == 0:
         messagebox.showerror("Warning", "Bạn chưa nhập tên sản phẩm")
     else:
-        threading.Thread(target=fillProductList, args=(root, searched_product)).start()
-
+        threading.Thread(target=fillProductList, args=(
+            root, searched_product)).start()

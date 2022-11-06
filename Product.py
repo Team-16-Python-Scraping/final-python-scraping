@@ -1,8 +1,4 @@
-
 class Product:
-    '''
-        
-    '''
     def __init__(self, name, minPrice, maxPrice, rating, sales, link):
         self.name = name
         self.minPrice = minPrice
