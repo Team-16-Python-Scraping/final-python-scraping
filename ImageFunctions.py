@@ -94,8 +94,7 @@ def download(url, pathname):    #tải file ảnh với url vừa lấy được
     file_size = int(response.headers.get("Content-Length", 0))  # lấy dung lượng ảnh
     filename = os.path.join(pathname, url.split("/")[-1])   # lấy tên file ảnh
     progress = tqdm(response.iter_content(1024), f"Downloading {filename}", total=file_size, unit="B", unit_scale=True, unit_divisor=1024) # thanh tiến độ tải, chuyển về bytes thay vì iteration (mặc định trong thư viện tqdm)
-    path = r'C:\team16\Images'
-    files = os.listdir(path)
+    files = os.listdir(pathname)
     ext = url[url.rindex('.'):]
     if ext.startswith('.png'):
         ext = '.png'
@@ -107,7 +106,7 @@ def download(url, pathname):    #tải file ảnh với url vừa lấy được
         ext = '.jpg'
     elif ext.startswith('.svg'):
         ext = '.svg'
-    with open(f'{path}\image{len(files)}{ext}', "wb") as f:
+    with open(f'{pathname}\image{len(files)}{ext}', "wb") as f:
         for data in progress.iterable:
             f.write(data)   # chuyền dữ liệu đọc được vào file
             progress.update(len(data))  # cập nhật tiến độ tải
