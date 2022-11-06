@@ -17,11 +17,6 @@ import os
 PATH = r'C:\Program Files (x86)\Chromedriver\chromedriver.exe'
 
 
-def accessToGithub():
-    webbrowser.open(
-        "https://github.com/Team-16-Python-Scraping/final-python-scraping.git")
-
-
 def getPosition(root, window_width, window_height):
     # get the screen size of your computer [width and height using the root object as foolows]
     screen_width = root.winfo_screenwidth()

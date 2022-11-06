@@ -10,7 +10,9 @@ class initWindow(tk.Tk):
         self.title('TEAM 16 - Python scraping')
         self.geometry(getPosition(self, 800, 500))
         self.resizable(False, False)
-
+    def accessToGithub(self):
+        webbrowser.open(
+        "https://github.com/Team-16-Python-Scraping/final-python-scraping.git")
     def intro(self):
         intro = tk.Tk()
         intro.title('Welcome')
@@ -32,7 +34,7 @@ class initWindow(tk.Tk):
         # Button about us for more infor
         btn_aboutUs = tk.Button(self, text='ABOUT US', bg='black',
                                fg='white', width=9, height=2,
-                               font=('Inter', 10, 'bold'),command=accessToGithub)
+                               font=('Inter', 10, 'bold'),command=self.accessToGithub)
         btn_aboutUs.pack(pady=2, anchor='e')
 
         #Create personal style

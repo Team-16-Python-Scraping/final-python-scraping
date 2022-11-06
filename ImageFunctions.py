@@ -39,7 +39,6 @@ def get_url(url):   # get link ảnh vào urls = []
                 for i in range(70):
                     totalScrolledHeight = driver.execute_script("return window.pageYOffset + window.innerHeight")
                     height = int(driver.execute_script("return document.documentElement.scrollHeight"))
-                    print(totalScrolledHeight, height)
                     if totalScrolledHeight == height:
                         break
                     driver.execute_script('window.scrollBy(0, 600)')
