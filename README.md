@@ -15,5 +15,8 @@
     pip install Selenium
     pip install lxml
     pip install tkinter
+    pip install Pillow
+    pip install tqdm
+    pip install requests
 ```
 - Đối với Chromedriver: Các bạn vào link [Chromedriver](https://chromedriver.chromium.org/downloads) và chọn phiên bản tương thích với trình duyệt Chrome trên máy<br>Sau khi cài đặt, các bạn copy đường dẫn và thay thế vào biến `PATH` trong file `shopeeFunctions.py` và `imageFunctions.py`
