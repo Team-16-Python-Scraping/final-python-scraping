@@ -1,4 +1,5 @@
 import threading
+from concurrent.futures import ThreadPoolExecutor
 import tkinter
 import lxml
 from tkinter import filedialog, messagebox
@@ -25,9 +26,9 @@ def getPosition(root, window_width, window_height):
     return f'{window_width}x{window_height}+{position_right}+{position_top}'
 
 
-def generateLinks(searched_product):
+def generateLinks(numberOfPage, searched_product):
     urlList = []
-    for i in range(1):
+    for i in range(numberOfPage):
         search = searched_product.lower().replace(' ', '%20')
         url = "https://shopee.vn/search?keyword={}&page={}".format(search, i)
         urlList.append(url)
@@ -38,10 +39,10 @@ def getHtml(url):  # get source code of web
     try:
         driver = webdriver.Chrome(executable_path=PATH)
         driver.get(url)
-        time.sleep(2)
-        for i in range(20):
-            driver.execute_script("window.scrollBy(0, 350)")
-            time.sleep(0.2)
+        time.sleep(3)
+        for i in range(15):
+            driver.execute_script("window.scrollBy(0, 500)")
+            time.sleep(0.1)
 
         # the script above for auto scroll in order to display all items which are written by js
         html = driver.page_source
@@ -78,19 +79,15 @@ def showProgressBar(root):
     pb.start()
 
 
-def endProgress(root):
+def endProgressBar(root):
     global win, pb
     pb.destroy()
     win.destroy()
 
-
-def fillProductList(root, searched_product, App):
-    App.productList.clear()
-    url = generateLinks(searched_product)[0]
-    threading.Thread(target=showProgressBar, args=(root, )).start()
+def fillProductList(url, App, root):
     soup = getHtml(url)
     if soup == None:
-        threading.Thread(target=endProgress, args=(root, )).start()
+        threading.Thread(target=endProgressBar, args=(root, )).start()
         messagebox.showerror('Error', 'Có lỗi xảy ra\nVui lòng kiểm tra lại')
 
         return
@@ -125,8 +122,15 @@ def fillProductList(root, searched_product, App):
         link_item = 'https://shopee.vn' + item.find('a')['href']
         p = Product(name_item, minPrice, maxPrice, rating, sales, link_item)
         App.productList.append(p)
+def run(root, numberOfPage, searched_product, App):
+    App.productList.clear()
+    urls = generateLinks(numberOfPage, searched_product)
+    threading.Thread(target=showProgressBar, args=(root, )).start()
+    with ThreadPoolExecutor(max_workers=os.cpu_count() - 1) as executor:
+        for url in urls:
+            executor.submit(fillProductList, *[url, App, root])
     showProducts(App)
-    threading.Thread(target=endProgress, args=(root, )).start()
+    threading.Thread(target=endProgressBar, args=(root, )).start()
 
 
 def writeToFile(name, App):
@@ -254,7 +258,7 @@ def showProducts(App):  # ProductTable
     lb_exportToFile = tk.Label(selections, text='Nhập tên file: ')
     e_exportToFile = tk.Entry(selections, width=40)
     btn_exportToFile = tk.Button(selections, text='Lưu vào file csv!', pady=10,
-                                 fg='white', bg='green', command=lambda: writeToFile(e_exportToFile.get()))
+                                 fg='white', bg='green', command=lambda: writeToFile(e_exportToFile.get(), App))
     btn_sortPrice.pack(pady=10)
     btn_sortSales.pack(pady=10)
     btn_sortRate.pack(pady=10)
@@ -263,9 +267,17 @@ def showProducts(App):  # ProductTable
     btn_exportToFile.pack(pady=10)
 
 
-def accessToShopee(root, searched_product, App):
+def accessToShopee(root, numberOfPage, searched_product, App):
     if len(searched_product) == 0:
         messagebox.showerror("Warning", "Bạn chưa nhập tên sản phẩm")
     else:
-        threading.Thread(target=fillProductList, args=(
-            root, searched_product, App)).start()
+        try:
+            n = int(numberOfPage)
+            if n > 20:
+                messagebox.showwarning("Error", 'Số lượng trang quá lớn\nVui lòng thử lại')
+            else:
+                threading.Thread(target=run, args=(
+                    root, n, searched_product, App)).start()
+
+        except:
+            messagebox.showerror("Error", "Mời bạn nhập đúng định dạng!")
