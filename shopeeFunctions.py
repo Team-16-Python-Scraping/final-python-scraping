@@ -254,7 +254,7 @@ def showProducts(App):  # ProductTable
     lb_exportToFile = tk.Label(selections, text='Nhập tên file: ')
     e_exportToFile = tk.Entry(selections, width=40)
     btn_exportToFile = tk.Button(selections, text='Lưu vào file csv!', pady=10,
-                                 fg='white', bg='green', command=lambda: writeToFile(e_exportToFile.get()))
+                                 fg='white', bg='green', command=lambda: writeToFile(e_exportToFile.get(),App))
     btn_sortPrice.pack(pady=10)
     btn_sortSales.pack(pady=10)
     btn_sortRate.pack(pady=10)
