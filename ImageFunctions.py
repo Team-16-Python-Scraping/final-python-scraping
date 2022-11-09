@@ -47,9 +47,6 @@ def get_url(url):   # get link ảnh vào urls = []
                 html = driver.page_source
                 driver.close()
                 soup = bs(html, 'lxml')
-                for item in soup.findAll('a', {'href' : True}):
-                    if item['href'].endswith('jpg'):
-                        urls.append(item['href'])
 
                 for item in soup.findAll('img', {'src' : True}):
                     if item is not None:
