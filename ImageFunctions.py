@@ -47,9 +47,6 @@ def get_url(url):   # get link ảnh vào urls = []
                 html = driver.page_source
                 driver.close()
                 soup = bs(html, 'lxml')
-                for item in soup.findAll('a', {'href' : True}):
-                    if item['href'].endswith('jpg'):
-                        urls.append(item['href'])
 
                 for item in soup.findAll('img', {'src' : True}):
                     if item is not None:
@@ -82,7 +79,7 @@ def showProgressBar(root):
     )
     cancel_button.grid(column=0, row=1, padx=10, pady=10, sticky=tkinter.E)
     pb.start()
-def endProgress(root):
+def endProgressBar(root):
     global win, pb
     pb.destroy()
     win.destroy() 
@@ -140,7 +137,7 @@ def getImage_run(tab2, url, path, limit):
                 pass
         for th in thread:
             th.join()
-        threading.Thread(target=endProgress, args=(tab2,)).start()
+        threading.Thread(target=endProgressBar, args=(tab2,)).start()
         response = messagebox.askokcancel("Successfully","Bạn có muốn mở thư mục không?")
         if response == 1 : showFolder()
 def showFolder():
