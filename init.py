@@ -85,16 +85,16 @@ class Window(tk.Tk):
         ckbLink.place(x=15, y=150)
 
         lbNumberOfPage = tk.Label(tab1, text='Số trang muốn lấy dữ liệu: ')
-        eNumberofPage = tk.Entry(tab1, width=20, textvariable=checkVar, state="readonly")
+        eNumberOfPage = tk.Entry(tab1, width=20, textvariable=tk.IntVar(value=1))
         lbNumberOfPage.place(x=10, y=265)
-        eNumberofPage.place(x=170, y=265)
+        eNumberOfPage.place(x=170, y=265)
 
         imgLogo = ImageTk.PhotoImage(Image.open('Img/logoshopee.png').resize((205, 205)))
         lbLogo = tk.Label(tab1, image=imgLogo)
 
         lbLogo.place(x=550, y=45)
 
-        btnSearch = tk.Button(tab1, text='TRA CỨU!', font=myfont, command= lambda: threading.Thread(target=accessToShopee, args=(tab1, eSearch.get(), self)).start())
+        btnSearch = tk.Button(tab1, text='TRA CỨU!', font=myfont, command= lambda: threading.Thread(target=accessToShopee, args=(tab1, eNumberOfPage.get(), eSearch.get(), self)).start())
         lbCopyRight = tk.Label(tab1, text='@2022 - team 16 PTIT',
                                height=2, bg='black', fg='white',
                                font=myfont, relief=tk.SUNKEN, width=self.winfo_screenwidth(), anchor=tk.W)
