@@ -37,7 +37,10 @@ def generateLinks(numberOfPage, searched_product):
 
 def getHtml(url):  # get source code of web
     try:
-        driver = webdriver.Chrome(executable_path=PATH)
+        options = webdriver.ChromeOptions()
+        options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        driver = webdriver.Chrome(executable_path=PATH, options=options)
+        # driver = webdriver.Chrome(executable_path=PATH)
         driver.get(url)
         time.sleep(3)
         for i in range(15):
