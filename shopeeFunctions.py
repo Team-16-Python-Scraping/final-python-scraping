@@ -41,7 +41,7 @@ def getHtml(url):  # get source code of web
         driver.get(url)
         time.sleep(3)
         for i in range(15):
-            driver.execute_script("window.scrollBy(0, 500)")
+            driver.execute_script("window.scrollBy(0, 450)")
             time.sleep(0.1)
 
         # the script above for auto scroll in order to display all items which are written by js
@@ -88,7 +88,6 @@ def fillProductList(url, App, root):
     soup = getHtml(url)
     if soup == None:
         threading.Thread(target=endProgressBar, args=(root, )).start()
-        messagebox.showerror('Error', 'Có lỗi xảy ra\nVui lòng kiểm tra lại')
 
         return
 
@@ -129,7 +128,11 @@ def run(root, numberOfPage, searched_product, App):
     with ThreadPoolExecutor(max_workers=os.cpu_count() - 1) as executor:
         for url in urls:
             executor.submit(fillProductList, *[url, App, root])
-    showProducts(App)
+    if len(App.productList) != 0:
+        showProducts(App)
+    else:
+        messagebox.showerror('Error', 'Có lỗi xảy ra\nVui lòng kiểm tra lại')
+
     threading.Thread(target=endProgressBar, args=(root, )).start()
 
 
@@ -273,7 +276,7 @@ def accessToShopee(root, numberOfPage, searched_product, App):
     else:
         try:
             n = int(numberOfPage)
-            if n > 20:
+            if n > 10:
                 messagebox.showwarning("Error", 'Số lượng trang quá lớn\nVui lòng thử lại')
             else:
                 threading.Thread(target=run, args=(
