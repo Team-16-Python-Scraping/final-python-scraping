@@ -39,14 +39,12 @@ def getHtml(url):  # get source code of web
         options = webdriver.ChromeOptions()
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
         driver = webdriver.Chrome(executable_path=PATH, options=options)
-        # driver = webdriver.Chrome(executable_path=PATH)
         driver.get(url)
         time.sleep(3)
         for i in range(15):
             driver.execute_script("window.scrollBy(0, 450)")
             time.sleep(0.1)
 
-        # the script above for auto scroll in order to display all items which are written by js
         html = driver.page_source
         driver.close()
         soup = BeautifulSoup(html, 'lxml')

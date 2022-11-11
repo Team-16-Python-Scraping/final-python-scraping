@@ -136,7 +136,6 @@ def getImage_run(tab2, url, path, limit):
                     if cnt > limit:
                         break
                     executor.submit(download, *[img, path])
-                    # download(img, path) # tải ảnh với mỗi url
                 except:
                     pass
         endProgressBar()
