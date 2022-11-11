@@ -1,3 +1,4 @@
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from tkinter import Toplevel, messagebox
 import tkinter
 from urllib.error import HTTPError, URLError
@@ -22,18 +23,24 @@ def get_url(url):   # get link ảnh vào urls = []
         try:
             hdr = {'User-Agent': 'Mozilla/5.0'}
             req = Request(url,headers=hdr)
-            page = urlopen(req)
         except TimeoutError as e:
+            endProgressBar()
             messagebox.showerror('Error', 'Time out')
         except HTTPError as e:
+            endProgressBar()
             messagebox.showerror('Error', 'Không tồn tại trang web')
         except URLError as e:
-            messagebox.showerror('Error', 'URL không hợp lệ')   
+            endProgressBar() 
+            messagebox.showerror('Error', 'URL không hợp lệ')  
         except:
+            endProgressBar()
             messagebox.showerror('Error', 'Đã có lỗi xảy ra\nVui lòng thử lại')
+            
         else:
             try:
-                driver = webdriver.Chrome(executable_path=PATH)
+                options = webdriver.ChromeOptions()
+                options.add_experimental_option('excludeSwitches', ['enable-logging'])
+                driver = webdriver.Chrome(executable_path=PATH, options=options)
                 driver.get(url)
                 time.sleep(2)
                 for i in range(70):
@@ -55,9 +62,9 @@ def get_url(url):   # get link ảnh vào urls = []
                 return urls     
             except:
                 messagebox.showerror('Error', 'Có lỗi xảy ra\nVui lòng thử lại')
-                return None
     return None
-        
+
+win, pb = None, None   
 def showProgressBar(root):
     global win, pb
     win = Toplevel()
@@ -79,7 +86,7 @@ def showProgressBar(root):
     )
     cancel_button.grid(column=0, row=1, padx=10, pady=10, sticky=tkinter.E)
     pb.start()
-def endProgressBar(root):
+def endProgressBar():
     global win, pb
     pb.destroy()
     win.destroy() 
@@ -117,27 +124,23 @@ def getImage_run(tab2, url, path, limit):
         except:
             messagebox.showerror('Error', 'Mời bạn nhập đúng định dạng')
             return
+    showProgressBar(tab2)
     imgs = get_url(url)  # lấy url ảnh
     if imgs == None:
         return
-    else:
-        threading.Thread(target=showProgressBar, args=(tab2,)).start()
+    else:        
         cnt = 0
-        thread = []
-        for img in imgs:
-            try:
-                cnt += 1
-                if cnt > limit:
-                    break
-                p = threading.Thread(target=download, args=(img, path))
-                p.start()
-                thread.append(p)
-                # download(img, path) # tải ảnh với mỗi url
-            except:
-                pass
-        for th in thread:
-            th.join()
-        threading.Thread(target=endProgressBar, args=(tab2,)).start()
+        with ThreadPoolExecutor(max_workers=os.cpu_count() - 1) as executor:
+            for img in imgs:
+                try:
+                    cnt += 1
+                    if cnt > limit:
+                        break
+                    executor.submit(download, *[img, path])
+                    # download(img, path) # tải ảnh với mỗi url
+                except:
+                    pass
+        endProgressBar()
         response = messagebox.askokcancel("Successfully","Bạn có muốn mở thư mục không?")
         if response == 1 : showFolder()
 def showFolder():
