@@ -5,11 +5,9 @@
     - BeautifulSoup
     - Selenium
     - tkinter
-    - time
     - PIL
     - requests
     - tqdm
-    - csv
 2. Ứng dụng Chromedriver
 - Đối với cài đặt các thư viện trên: Các bạn vào cmd và copy paste đoạn code sau
 ```
