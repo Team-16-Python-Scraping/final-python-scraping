@@ -90,7 +90,6 @@ def fillProductList(url, App, root):
     soup = getHtml(url)
     if soup == None:
         endProgressBar()
-
         return
 
     items = soup.find_all(
@@ -98,7 +97,7 @@ def fillProductList(url, App, root):
     for item in items:
 
         # name
-        name_item = item.find('div', class_='ie3A+n bM+7UW Cve6sh').text
+        nameItem = item.find('div', class_='ie3A+n bM+7UW Cve6sh').text
         price = item.findAll('span', class_='ZEgDH9')
 
         minPrice, maxPrice = 0, 0
@@ -120,8 +119,8 @@ def fillProductList(url, App, root):
             )[-1].replace(',', '').replace('k', '000')
 
         # link
-        link_item = 'https://shopee.vn' + item.find('a')['href']
-        p = Product(name_item, minPrice, maxPrice, rating, sales, link_item)
+        linkItem = 'https://shopee.vn' + item.find('a')['href']
+        p = Product(nameItem, minPrice, maxPrice, rating, sales, linkItem)
         App.productList.append(p)
 def run(root, numberOfPage, searched_product, App):
     App.productList.clear()
@@ -272,8 +271,8 @@ def showProducts(App):  # ProductTable
     btn_exportToFile.pack(pady=10)
 
 
-def accessToShopee(root, numberOfPage, searched_product, App):
-    if len(searched_product) == 0:
+def accessToShopee(root, numberOfPage, searchedProduct, App):
+    if len(searchedProduct) == 0:
         messagebox.showerror("Warning", "Bạn chưa nhập tên sản phẩm")
     else:
         try:
@@ -282,7 +281,7 @@ def accessToShopee(root, numberOfPage, searched_product, App):
                 messagebox.showwarning("Error", 'Số lượng trang quá lớn\nVui lòng thử lại')
             else:
                 threading.Thread(target=run, args=(
-                    root, n, searched_product, App)).start()
+                    root, n, searchedProduct, App)).start()
 
         except:
             messagebox.showerror("Error", "Mời bạn nhập đúng định dạng!")
