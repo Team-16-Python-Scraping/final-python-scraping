@@ -1,15 +1,14 @@
-from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 from tkinter import Toplevel, messagebox
 import tkinter
 from urllib.error import HTTPError, URLError
-from urllib.request import urlopen, Request
+from urllib.request import Request
 import requests
 import os
 from selenium import webdriver
 from tqdm import tqdm #thư viện hiện tiến trình tải
 from bs4 import BeautifulSoup as bs
 from tkinter import ttk
-import threading
 from tkinter import filedialog
 from shopeeFunctions import getPosition
 import time

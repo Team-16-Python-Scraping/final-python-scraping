@@ -1,8 +1,7 @@
 import threading
 from concurrent.futures import ThreadPoolExecutor
 import tkinter
-import lxml
-from tkinter import filedialog, messagebox
+from tkinter import messagebox
 from tkinter import ttk
 from bs4 import BeautifulSoup
 from selenium import webdriver
