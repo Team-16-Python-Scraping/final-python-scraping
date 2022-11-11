@@ -82,7 +82,7 @@ def showProgressBar(root):
     pb.start()
 
 
-def endProgressBar(root):
+def endProgressBar():
     global win, pb
     pb.destroy()
     win.destroy()
@@ -90,7 +90,7 @@ def endProgressBar(root):
 def fillProductList(url, App, root):
     soup = getHtml(url)
     if soup == None:
-        threading.Thread(target=endProgressBar, args=(root, )).start()
+        endProgressBar()
 
         return
 
@@ -127,7 +127,7 @@ def fillProductList(url, App, root):
 def run(root, numberOfPage, searched_product, App):
     App.productList.clear()
     urls = generateLinks(numberOfPage, searched_product)
-    threading.Thread(target=showProgressBar, args=(root, )).start()
+    showProgressBar(root)
     with ThreadPoolExecutor(max_workers=os.cpu_count() - 1) as executor:
         for url in urls:
             executor.submit(fillProductList, *[url, App, root])
@@ -136,7 +136,7 @@ def run(root, numberOfPage, searched_product, App):
     else:
         messagebox.showerror('Error', 'Có lỗi xảy ra\nVui lòng kiểm tra lại')
 
-    threading.Thread(target=endProgressBar, args=(root, )).start()
+    endProgressBar()
 
 
 def writeToFile(name, App):
