@@ -4,7 +4,6 @@
 1. Các thư viện sau:
     - BeautifulSoup
     - Selenium
-    - lxml
     - tkinter
     - time
     - csv
@@ -13,7 +12,6 @@
 ```
     pip install BeautifulSoup4
     pip install Selenium
-    pip install lxml
     pip install tkinter
     pip install Pillow
     pip install tqdm
