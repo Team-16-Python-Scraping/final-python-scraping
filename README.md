@@ -8,6 +8,7 @@
     - PIL
     - requests
     - tqdm
+    - lxml
 2. Ứng dụng Chromedriver
 - Đối với cài đặt các thư viện trên: Các bạn vào cmd và copy paste đoạn code sau
 ```
@@ -17,6 +18,7 @@
     pip install Pillow
     pip install tqdm
     pip install requests
+    pip install lxml
 ```
 - Đối với Chromedriver: Các bạn vào link [Chromedriver](https://chromedriver.chromium.org/downloads) và chọn phiên bản tương thích với trình duyệt Chrome trên máy<br>Sau khi cài đặt, các bạn copy đường dẫn và thay thế vào biến `PATH` trong file `shopeeFunctions.py` và `imageFunctions.py`
 ## II. Chạy ứng dụng
